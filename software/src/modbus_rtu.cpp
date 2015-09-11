@@ -1,5 +1,5 @@
+#include <QMutexLocker>
 #include <QTimer>
-#include <QsLog.h>
 #include <unistd.h>
 #include "defines.h"
 #include "modbus_rtu.h"
@@ -36,6 +36,7 @@ ModbusRtu::~ModbusRtu()
 void ModbusRtu::readRegisters(FunctionCode function, quint8 slaveAddress,
 							  quint16 startReg, quint16 count)
 {
+	QMutexLocker lock(&mMutex);
 	if (mState == Idle) {
 		_readRegisters(function, slaveAddress, startReg, count);
 	} else {
@@ -51,6 +52,7 @@ void ModbusRtu::readRegisters(FunctionCode function, quint8 slaveAddress,
 void ModbusRtu::writeRegister(FunctionCode function, quint8 slaveAddress,
 							  quint16 reg, quint16 value)
 {
+	QMutexLocker lock(&mMutex);
 	if (mState == Idle) {
 		_writeRegister(function, slaveAddress, reg, value);
 	} else {
@@ -65,56 +67,70 @@ void ModbusRtu::writeRegister(FunctionCode function, quint8 slaveAddress,
 
 void ModbusRtu::onTimeout()
 {
+	QMutexLocker lock(&mMutex);
 	if (mState == Idle || mState == Process)
 		return;
 	int cs = mCurrentSlave;
 	resetStateEngine();
 	processPending();
+	mMutex.unlockInline();
 	emit errorReceived(Timeout, cs, 0);
 }
 
 void ModbusRtu::processPacket()
 {
+	QMutexLocker lock(&mMutex);
 	int cs = mCurrentSlave;
 	if (mCrc != mCrcBuilder.getValue()) {
 		resetStateEngine();
 		processPending();
+		mMutex.unlockInline();
 		emit errorReceived(CrcError, cs, 0);
-	} else if ((mFunction & 0x80) != 0) {
+		return;
+	}
+	if ((mFunction & 0x80) != 0) {
 		quint8 errorCode = mData[0];
 		resetStateEngine();
 		processPending();
+		mMutex.unlockInline();
 		emit errorReceived(Exception, cs, errorCode);
-	} else if (mState == Function) {
+		return;
+	}
+	if (mState == Function) {
+		FunctionCode function = mFunction;
 		resetStateEngine();
 		processPending();
-		emit errorReceived(Unsupported, cs, mFunction);
-	} else {
-		FunctionCode function = mFunction;
-		switch (function) {
-		case ReadHoldingRegisters:
-		case ReadInputRegisters:
-		{
-			QList<quint16> registers;
-			for (int i=0; i<mData.length(); i+=2) {
-				registers.append(toUInt16(mData[i], mData[i + 1]));
-			}
-			resetStateEngine();
-			processPending();
-			emit readCompleted(function, cs, registers);
-			break;
+		mMutex.unlockInline();
+		emit errorReceived(Unsupported, cs, function);
+		return;
+	}
+	FunctionCode function = mFunction;
+	switch (function) {
+	case ReadHoldingRegisters:
+	case ReadInputRegisters:
+	{
+		QList<quint16> registers;
+		for (int i=0; i<mData.length(); i+=2) {
+			registers.append(toUInt16(mData[i], mData[i + 1]));
 		}
-		case WriteSingleRegister:
-		{
-			quint16 value = toUInt16(mData[0], mData[1]);
-			resetStateEngine();
-			processPending();
-			emit writeCompleted(function, cs, mStartAddress, value);
-			break;
-		}
-		default:
-			break;
-		}
+		resetStateEngine();
+		processPending();
+		mMutex.unlockInline();
+		emit readCompleted(function, cs, registers);
+		return;
+	}
+	case WriteSingleRegister:
+	{
+		quint16 value = toUInt16(mData[0], mData[1]);
+		quint16 startAddress = mStartAddress;
+		resetStateEngine();
+		processPending();
+		mMutex.unlockInline();
+		emit writeCompleted(function, cs, startAddress, value);
+		return;
+	}
+	default:
+		break;
 	}
 }
 
@@ -137,7 +153,6 @@ void ModbusRtu::handleByteRead(quint8 b)
 			// Exception
 			mCount = 1;
 			mState = Data;
-			mData.clear();
 		} else {
 			switch (mFunction) {
 			case ReadHoldingRegisters:
@@ -155,8 +170,12 @@ void ModbusRtu::handleByteRead(quint8 b)
 		break;
 	case ByteCount:
 		mCount = b;
-		mState = mCount == 0 ? CrcMsb : Data;
-		mData.clear();
+		if (mCount == 0) {
+			mState = CrcMsb;
+			mAddToCrc = false;
+		} else {
+			mState = Data;
+		}
 		break;
 	case StartAddressMsb:
 		mStartAddress = b << 8;
@@ -166,7 +185,6 @@ void ModbusRtu::handleByteRead(quint8 b)
 		mStartAddress |= b;
 		mCount = 2;
 		mState = Data;
-		mData.clear();
 		break;
 	case Data:
 		if (mCount > 0) {
@@ -196,6 +214,7 @@ void ModbusRtu::resetStateEngine()
 	mCrcBuilder.reset();
 	mAddToCrc = true;
 	mCurrentSlave = 0;
+	mData.clear();
 	mTimer->stop();
 }
 
@@ -258,7 +277,7 @@ void ModbusRtu::send(QByteArray &data)
 	// Modbus requires a pause between sending of 3.5 times the interval needed
 	// to send a character. We use 4 characters here, just in case...
 	// We also assume 10 bits per caracter (8 data bits, 1 stop bit and 1 parity
-	// bit). Keep in mind that overestimating the charcter time does not hurt
+	// bit). Keep in mind that overestimating the character time does not hurt
 	// (a lot), but underestimating does.
 	// Then number of bits devided by the the baudrate (unit: bits/second) gives
 	// us the time in seconds. usleep wants time in microseconds, so we have to
@@ -274,6 +293,7 @@ void ModbusRtu::onDataRead(VeSerialPortS *port, const quint8 *buffer,
 						   quint32 length)
 {
 	ModbusRtu *rtu = reinterpret_cast<ModbusRtu *>(port->ctx);
+	QMutexLocker lock(&rtu->mMutex);
 	for (quint32 i=0; i<length; ++i)
 		rtu->handleByteRead(buffer[i]);
 }
@@ -281,8 +301,6 @@ void ModbusRtu::onDataRead(VeSerialPortS *port, const quint8 *buffer,
 void ModbusRtu::onSerialEvent(VeSerialPortS *port, VeSerialEvent event,
 							  const char *desc)
 {
-	QLOG_INFO() << "onSerialEvent";
-	Q_UNUSED(port);
 	Q_UNUSED(event);
 	ModbusRtu *rtu = reinterpret_cast<ModbusRtu *>(port->ctx);
 	emit rtu->serialEvent(desc);
