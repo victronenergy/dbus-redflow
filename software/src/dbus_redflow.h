@@ -36,11 +36,11 @@ signals:
 private slots:
 	void onDeviceFound(int address);
 
-	void onDeviceFound();
+	void onDeviceFound(BatteryController *battery);
 
-	void onDeviceInitialized();
+	void onDeviceInitialized(BatteryController *c);
 
-	void onConnectionLost();
+	void onConnectionLost(BatteryController *battery);
 
 	void onConnectionStateChanged();
 

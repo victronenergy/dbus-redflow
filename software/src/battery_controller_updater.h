@@ -79,6 +79,7 @@ private:
 		OperationalMode,
 		Health,
 		Wait,
+		WaitOnDeviceReinit,
 		WaitOnConnectionLost,
 
 		SetAddress,

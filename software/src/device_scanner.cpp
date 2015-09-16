@@ -111,9 +111,7 @@ void DeviceScanner::onTimer()
 int DeviceScanner::getNextCandidateAddress() const
 {
 	for (int a = mMaxAddress + 1;; ++a) {
-		if (a != DefaultAddress1 &&
-			a != DefaultAddress2 &&
-			!mDiscoveredDevices.contains(a)) {
+		if (a != DefaultAddress1 && a != DefaultAddress2) {
 			return a;
 		}
 	}
@@ -130,12 +128,10 @@ int DeviceScanner::getNextScanAddress(int address)
 			a = DefaultAddress1 + 1;
 		if (a == DefaultAddress2)
 			a = DefaultAddress2 + 1;
-		if (!mDiscoveredDevices.contains(a)) {
-			mAutoScanAddress = a;
-			if (a % 10 == 0)
-				a = DefaultAddress1;
-			return a;
-		}
+		mAutoScanAddress = a;
+		if (a % 10 == 0)
+			a = DefaultAddress1;
+		return a;
 	}
 }
 
@@ -146,17 +142,13 @@ void DeviceScanner::addNewDevice(int address)
 		QLOG_ERROR() << "Default modbus address reported as new address" << address;
 		return;
 	}
-	if (mDiscoveredDevices.contains(address)) {
-		QLOG_ERROR() << "Existing modbus address reported as new" << address;
-		return;
-	}
-	mDiscoveredDevices.append(address);
 	mMaxAddress = qMax(mMaxAddress, address);
 	emit deviceFound(address);
 }
 
 void DeviceScanner::scanAddress(int address)
 {
+	QLOG_TRACE() << "Polling modbus address" << address;
 	mProbedAddress = address;
 	if (mScanInterval < 250) {
 		mModbus->readRegisters(ModbusRtu::ReadHoldingRegisters, address, 0x9010, 1);

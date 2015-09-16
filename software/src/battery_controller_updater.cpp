@@ -7,6 +7,7 @@
 
 static const int MaxTimeoutCount = 5;
 static const int MeasurementWaitInterval = 5000;
+static const int DeviceReinitInterval = 10 * 1000;
 static const int ConnectionLostWaitInterval = 60 * 1000;  // 60 seconds in ms
 
 enum ModbusRegisters {
@@ -227,7 +228,7 @@ void BatteryControllerUpdater::onWriteCompleted(int function, quint8 slaveAddres
 		return;
 	switch (mState) {
 	case SetAddress:
-		mTmpState = Init;
+		mTmpState = WaitOnDeviceReinit;
 		break;
 	case ClearStatus:
 		mBatteryController->setClearStatusRegisterFlags(0);
@@ -264,6 +265,7 @@ void BatteryControllerUpdater::onWaitFinished()
 		mState = Start;
 		break;
 	case WaitOnConnectionLost:
+	case WaitOnDeviceReinit:
 		mState = Init;
 		break;
 	default:
@@ -343,6 +345,14 @@ void BatteryControllerUpdater::startNextAction()
 		}
 		break;
 	}
+	case WaitOnDeviceReinit:
+		QLOG_INFO() << "Device address changed, waiting for reinit";
+		mDeviceAddress = mBatteryController->DeviceAddress();
+		mBatteryController->setSerial(QString());
+		mBatteryController->setConnectionState(Disconnected);
+		mAcquisitionTimer->setInterval(DeviceReinitInterval);
+		mAcquisitionTimer->start();
+		break;
 	case WaitOnConnectionLost:
 		mAcquisitionTimer->setInterval(ConnectionLostWaitInterval);
 		mAcquisitionTimer->start();

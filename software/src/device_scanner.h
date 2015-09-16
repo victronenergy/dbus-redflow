@@ -46,7 +46,6 @@ private:
 	int mNewDeviceAddress;
 	int mAutoScanAddress;
 	int mMaxAddress;
-	QList<int> mDiscoveredDevices;
 };
 
 #endif // DEVICE_SCANNER_H

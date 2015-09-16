@@ -27,7 +27,9 @@ QList<int> BatterySummary::deviceAddresses() const
 {
 	QList<int> result;
 	foreach (BatteryController *bc, mControllers) {
-		result.append(bc->DeviceAddress());
+		int address = bc->DeviceAddress();
+		if (!result.contains(address))
+			result.append(address);
 	}
 	return result;
 }
@@ -38,6 +40,8 @@ void BatterySummary::addBattery(BatteryController *c)
 		return;
 	mControllers.append(c);
 	connect(c, SIGNAL(destroyed()), this, SLOT(onControllerDestroyed()));
+	connect(c, SIGNAL(deviceAddressChanged()),
+			this, SIGNAL(deviceAddressesChanged()));
 	updateValues();
 	emit deviceAddressesChanged();
 }
@@ -194,9 +198,13 @@ void BatterySummary::updateValues()
 	double tMax = 0;
 	double socTot = 0;
 	int socCount = 0;
+	int count = 0;
 	bool maintenanceNeeded = true;
 	bool maintenanceActive = true;
 	foreach (BatteryController *bc, mControllers) {
+		if (bc->connectionState() != Connected)
+			continue;
+		++count;
 		if (bc->BattVolts() > 0) {
 			vTot += bc->BattVolts();
 			++vCount;
@@ -222,7 +230,6 @@ void BatterySummary::updateValues()
 		if (mRequestImmediateSelfMaintenance == 1)
 			bc->setRequestImmediateSelfMaintenance(1);
 	}
-	int count = mControllers.size();
 
 	// Note: if a devision by zero occurs we leave the INF/NAN value. It will
 	// be published as an invalid value on the D-Bus.

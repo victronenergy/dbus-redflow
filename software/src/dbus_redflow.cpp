@@ -38,6 +38,10 @@ DBusRedflow::DBusRedflow(const QString &portName, QObject *parent):
 
 void DBusRedflow::onDeviceFound(int address)
 {
+	foreach (BatteryController *c, mBatteryControllers) {
+		if (c->DeviceAddress() == address)
+			return;
+	}
 	BatteryController *m = new BatteryController(mPortName, address, this);
 	new BatteryControllerUpdater(m, mModbus, m);
 	mBatteryControllers.append(m);
@@ -51,15 +55,15 @@ void DBusRedflow::onConnectionStateChanged()
 	BatteryController *m = static_cast<BatteryController *>(sender());
 	switch (m->connectionState()) {
 	case Disconnected:
-		onConnectionLost();
+		onConnectionLost(m);
 		break;
 	case Searched:
 		break;
 	case Detected:
-		onDeviceFound();
+		onDeviceFound(m);
 		break;
 	case Connected:
-		onDeviceInitialized();
+		onDeviceInitialized(m);
 		break;
 	}
 }
@@ -72,32 +76,27 @@ void DBusRedflow::onScanTimeout()
 	}
 }
 
-void DBusRedflow::onDeviceFound()
+void DBusRedflow::onDeviceFound(BatteryController *battery)
 {
-	BatteryController *m = static_cast<BatteryController *>(sender());
-	BatteryControllerUpdater *mu = m->findChild<BatteryControllerUpdater *>();
-	QLOG_INFO() << "Device found:" << m->serial()
-				<< '@' << m->portName();
-	BatteryControllerSettings *settings = mu->settings();
-	settings->setParent(m);
+	QLOG_INFO() << "Device found:" << battery->serial()
+				<< '@' << battery->portName();
 }
 
-void DBusRedflow::onDeviceInitialized()
+void DBusRedflow::onDeviceInitialized(BatteryController *battery)
 {
-	BatteryController *m = static_cast<BatteryController *>(sender());
-	new BatteryControllerBridge(m, m);
+	new BatteryControllerBridge(battery, battery);
 	if (mSummary == 0) {
 		mSummary = new BatterySummary(this);
 		// Make sure we add the battery before registration. The addBattery
 		// function will update the values within the summary, so we avoid
 		// registering a service without valid values.
-		mSummary->addBattery(m);
+		mSummary->addBattery(battery);
 		BatterySummaryBridge *bridge = new BatterySummaryBridge(mSummary, mSummary);
 		bridge->registerService();
 	} else {
-		mSummary->addBattery(m);
+		mSummary->addBattery(battery);
 	}
-	/// @todo EV: Disbabled for now, because BMS like support is still is
+	/// @todo EV: Disabled for now, because BMS like support is still is
 	/// design.
 //	if (mBmsService == 0) {
 //		mBmsService = new BmsService(this);
@@ -108,8 +107,10 @@ void DBusRedflow::onDeviceInitialized()
 //	}
 }
 
-void DBusRedflow::onConnectionLost()
+void DBusRedflow::onConnectionLost(BatteryController *battery)
 {
+	// This will remove the ZBM battery from the D-Bus
+	delete battery->findChild<BatteryControllerBridge *>();
 	foreach (BatteryController *c, mBatteryControllers) {
 		if (c->connectionState() != Disconnected)
 			return;
