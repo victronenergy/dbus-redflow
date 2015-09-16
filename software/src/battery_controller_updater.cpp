@@ -177,7 +177,7 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 	}
 	case Measurements:
 		mBatteryController->setSOC(registers[0] / 100.0);
-		mBatteryController->setSOCAmpHrs(static_cast<qint16>(registers[1]) / 10.0);
+		mBatteryController->setSOCAmpHrs(-static_cast<qint16>(registers[1]) / 10.0);
 		mBatteryController->setBattVolts(registers[2] / 10.0);
 		mBatteryController->setBattAmps(-static_cast<qint16>(registers[3]) / 10.0);
 		mBatteryController->setBattTemp(static_cast<qint16>(registers[4]) / 10.0);
