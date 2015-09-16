@@ -40,17 +40,6 @@ public:
 	BatteryControllerUpdater(BatteryController *mBatteryController,
 							 ModbusRtu *modbus, QObject *parent = 0);
 
-	/*!
-	 * Returns the settings object.
-	 * This object is created by the `AcSensorUpdater` when a device has been
-	 * detected. It will be null while the `connectionState` of the `AcSensor`
-	 * is `Disconnected` or `Searched`.
-	 * The information in the settings will be used for data retrieval and can
-	 * be changed while retrieval is active. This may lead to reinitialization
-	 * of the updater (and the energy meter itself).
-	 */
-	BatteryControllerSettings *settings();
-
 private slots:
 	void onErrorReceived(int errorType, quint8 addr, int exception);
 
@@ -103,7 +92,6 @@ private:
 	BatteryController *mBatteryController;
 	int mDeviceAddress;
 	bool mUpdatingController;
-	BatteryControllerSettings *mSettings;
 	ModbusRtu *mModbus;
 	QTimer *mAcquisitionTimer;
 	int mTimeoutCount;

@@ -41,7 +41,6 @@ BatteryControllerUpdater::BatteryControllerUpdater(BatteryController *mBatteryCo
 	mBatteryController(mBatteryController),
 	mDeviceAddress(mBatteryController->DeviceAddress()),
 	mUpdatingController(false),
-	mSettings(0),
 	mModbus(0),
 	mAcquisitionTimer(new QTimer(this)),
 	mTimeoutCount(0),
@@ -73,11 +72,6 @@ BatteryControllerUpdater::BatteryControllerUpdater(BatteryController *mBatteryCo
 	startNextAction();
 }
 
-BatteryControllerSettings *BatteryControllerUpdater::settings()
-{
-	return mSettings;
-}
-
 void BatteryControllerUpdater::onErrorReceived(int errorType, quint8 slaveAddress,
 											   int exception)
 {
@@ -92,8 +86,6 @@ void BatteryControllerUpdater::onErrorReceived(int errorType, quint8 slaveAddres
 				QLOG_ERROR() << "Lost connection to battery controller";
 			}
 			mState = WaitOnConnectionLost;
-			delete mSettings;
-			mSettings = 0;
 			mTimeoutCount = MaxTimeoutCount - 1;
 			mBatteryController->setSerial(QString());
 			mBatteryController->setConnectionState(Disconnected);
@@ -135,7 +127,6 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 	{
 		QString serial = QString::number(registers[0]);
 		QLOG_INFO() << "Serial number:" << serial;
-		mSettings = new BatteryControllerSettings(0, serial, this);
 		mState = FirmwareVersion;
 		mBatteryController->setSerial(serial);
 		mBatteryController->setConnectionState(Detected);
@@ -211,7 +202,7 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 		break;
 	default:
 		QLOG_ERROR() << "Unknown updater state" << mState;
-		mState = mSettings == 0 ? Init : Start;
+		mState = mBatteryController->serial().isEmpty() ? Init : Start;
 		break;
 	}
 	mTimeoutCount = 0;
