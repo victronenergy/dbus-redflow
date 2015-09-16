@@ -168,10 +168,10 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 		mBatteryController->setLeak1TripAlarm(getErrorState(hwFailure, 4));
 		mBatteryController->setLeak2TripAlarm(getErrorState(hwFailure, 3));
 		mBatteryController->setUnknownAlarm(getAlarmState(hwFailure | opFailure, warning, 0));
-//		mBatteryController->setStsRegSummary(registers[0]);
-//		mBatteryController->setStsRegHardwareFailure(registers[1]);
-//		mBatteryController->setStsRegOperationalFailure(registers[2]);
-//		mBatteryController->setStsRegWarning(registers[3]);
+		mBatteryController->setStsRegSummary(registers[0]);
+		mBatteryController->setStsRegHardwareFailure(registers[1]);
+		mBatteryController->setStsRegOperationalFailure(registers[2]);
+		mBatteryController->setStsRegWarning(registers[3]);
 		mState = Measurements;
 		break;
 	}
