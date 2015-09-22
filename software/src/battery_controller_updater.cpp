@@ -192,7 +192,7 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 		break;
 	case Health:
 		mBatteryController->setHealthIndication(registers[0]);
-		mBatteryController->setBussVolts(registers[1] / 10.0);
+		mBatteryController->setBusVolts(registers[1] / 10.0);
 		mBatteryController->setState(registers[2]);
 		mBatteryController->setConnectionState(Connected);
 		mState = Wait;

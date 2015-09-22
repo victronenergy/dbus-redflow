@@ -8,7 +8,7 @@ BatteryController::BatteryController(const QString &portName, int deviceAddress,
 	mDeviceType(0),
 	mPortName(portName),
 	mBattVolts(0),
-	mBussVolts(0),
+	mBusVolts(0),
 	mBattAmps(0),
 	mBattTemp(0),
 	mAirTemp(0),
@@ -106,17 +106,17 @@ void BatteryController::setBattVolts(double t)
 	emit battPowerChanged();
 }
 
-double BatteryController::BussVolts() const
+double BatteryController::BusVolts() const
 {
-	return mBussVolts;
+	return mBusVolts;
 }
 
-void BatteryController::setBussVolts(double t)
+void BatteryController::setBusVolts(double t)
 {
-	if (mBussVolts == t)
+	if (mBusVolts == t)
 		return;
-	mBussVolts = t;
-	emit bussVoltsChanged();
+	mBusVolts = t;
+	emit busVoltsChanged();
 }
 
 double BatteryController::BattAmps() const

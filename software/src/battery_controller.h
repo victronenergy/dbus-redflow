@@ -36,7 +36,7 @@ class BatteryController : public QObject
 	Q_PROPERTY(double SOCAmpHrs READ SOCAmpHrs WRITE setSOCAmpHrs NOTIFY socAmpHrsChanged)
 	Q_PROPERTY(double AirTemp READ AirTemp WRITE setAirTemp NOTIFY airTempChanged)
 	Q_PROPERTY(double HealthIndication READ HealthIndication WRITE setHealthIndication NOTIFY healthIndicationChanged)
-	Q_PROPERTY(double BussVolts READ BussVolts WRITE setBussVolts NOTIFY bussVoltsChanged)
+	Q_PROPERTY(double BusVolts READ BusVolts WRITE setBusVolts NOTIFY busVoltsChanged)
 	Q_PROPERTY(int State READ State WRITE setState NOTIFY stateChanged)
 	Q_PROPERTY(int DeviceAddress READ DeviceAddress WRITE setDeviceAddress NOTIFY deviceAddressChanged)
 	Q_PROPERTY(int ClearStatusRegisterFlags READ ClearStatusRegisterFlags WRITE setClearStatusRegisterFlags NOTIFY clearStatusRegisterFlagsChanged)
@@ -66,7 +66,7 @@ signals:
 	void battAmpsChanged();
 	void battVoltsChanged();
 	void battTempChanged();
-	void bussVoltsChanged();
+	void busVoltsChanged();
 	void airTempChanged();
 	void socChanged();
 	void battPowerChanged();
@@ -131,9 +131,9 @@ public:
 
 	void setBattAmps(double t);
 
-	double BussVolts() const;
+	double BusVolts() const;
 
-	void setBussVolts(double t);
+	void setBusVolts(double t);
 
 	double BattTemp() const;
 
@@ -234,7 +234,7 @@ private:
 	QString mPortName;
 	QString mSerial;
 	double mBattVolts;
-	double mBussVolts;
+	double mBusVolts;
 	double mBattAmps;
 	double mBattTemp;
 	double mAirTemp;
