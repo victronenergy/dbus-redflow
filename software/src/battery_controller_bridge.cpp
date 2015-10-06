@@ -74,11 +74,11 @@ void BatteryControllerBridge::produceBatteryInfo(BatteryController *bc, const QS
 	produce(bc, "RequestImmediateSelfMaintenance", path + "/RequestImmediateSelfMaintenance", "", 0);
 
 	produce(bc, "hasAlarm", path + "/Alarms/Alarm", "", 0);
-	produce(bc, "maintenanceAlarm", path + "/Alarms/Maintenance", "", 0);
+	produce(bc, "maintenanceAlarm", path + "/Alarms/MaintenanceNeeded", "", 0);
 	produce(bc, "maintenanceActiveAlarm", path + "/Alarms/MaintenanceActive", "", 0);
 	produce(bc, "overCurrentAlarm", path + "/Alarms/OverCurrent", "", 0);
-	produce(bc, "overVoltageAlarm", path + "/Alarms/OverVoltage", "", 0);
-	produce(bc, "batteryTemperatureAlarm", path + "/Alarms/BatteryTemperature", "", 0);
+	produce(bc, "overVoltageAlarm", path + "/Alarms/HighVoltage", "", 0);
+	produce(bc, "batteryTemperatureAlarm", path + "/Alarms/HighTemperature", "", 0);
 	produce(bc, "zincPumpAlarm", path + "/Alarms/ZincPump", "", 0);
 	produce(bc, "bromidePumpAlarm", path + "/Alarms/BromidePump", "", 0);
 	produce(bc, "leakSensorsAlarm", path + "/Alarms/LeakSensors", "", 0);
