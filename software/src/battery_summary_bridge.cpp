@@ -28,7 +28,7 @@ BatterySummaryBridge::BatterySummaryBridge(BatterySummary *summary,
 	produce(summary, "requestImmediateSelfMaintenance", "/RequestImmediateSelfMaintenance");
 	produce(summary, "requestDelayedSelfMaintenance", "/RequestDelayedSelfMaintenance");
 	produce(summary, "maintenanceActive", "/Alarms/MaintenanceActive");
-	produce(summary, "maintenanceNeeded", "/Alarms/Maintenance");
+	produce(summary, "maintenanceNeeded", "/Alarms/MaintenanceNeeded");
 	produce(summary, "deviceAddresses", "/DeviceAddresses");
 }
 
