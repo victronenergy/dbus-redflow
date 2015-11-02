@@ -63,7 +63,7 @@ void BatteryControllerBridge::produceBatteryInfo(BatteryController *bc, const QS
 	produce(bc, "SOC", path + "/Soc", "%", 1);
 
 	produce(bc, "operationalMode", path + "/OperationalMode", "", 0);
-	produce(bc, "SOCAmpHrs", path + "/ConsumedAmphours", "kWh", 0 );
+	produce(bc, "SOCAmpHrs", path + "/ConsumedAmphours", "Ah", 0 );
 	produce(bc, "AirTemp", path + "/AirTemperature", "C", 0);
 	// According to Redflow, the state of health indicator is not reliable yet.
 	// We don't use the generic name /Soh in order to prevent the value to
