@@ -16,7 +16,6 @@ DeviceScanner::DeviceScanner(ModbusRtu *modbus, QObject *parent):
 	mMaxAddress(1)
 {
 	Q_ASSERT(modbus != 0);
-	Q_ASSERT(settings != 0);
 	scanAddress(DefaultAddress1);
 	connect(mModbus, SIGNAL(readCompleted(int, quint8, const QList<quint16> &)),
 			this, SLOT(onReadCompleted(int, quint8, QList<quint16>)));
