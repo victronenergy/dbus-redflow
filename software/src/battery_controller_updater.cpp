@@ -164,7 +164,7 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 		mBatteryController->setElectricBoardAlarm(getErrorState(hwFailure, 8));
 		mBatteryController->setBatteryTemperatureSensorAlarm(getErrorState(hwFailure, 7));
 		mBatteryController->setAirTemperatureSensorAlarm(getErrorState(hwFailure, 6));
-		mBatteryController->setStateOfHealthAlarm(getErrorState(hwFailure, 6));
+		mBatteryController->setStateOfHealthAlarm(getErrorState(hwFailure, 5));
 		mBatteryController->setLeak1TripAlarm(getErrorState(hwFailure, 4));
 		mBatteryController->setLeak2TripAlarm(getErrorState(hwFailure, 3));
 		mBatteryController->setUnknownAlarm(getAlarmState(hwFailure | opFailure, warning, 0));
