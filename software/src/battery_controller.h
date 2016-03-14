@@ -29,10 +29,6 @@ class BatteryController : public QObject
 	Q_PROPERTY(QString firmwareVersion READ firmwareVersion WRITE setFirmwareVersion NOTIFY firmwareVersionChanged)
 	Q_PROPERTY(QString portName READ portName)
 	Q_PROPERTY(int operationalMode READ operationalMode WRITE setOperationalMode NOTIFY operationalModeChanged)
-//	Q_PROPERTY(int StsRegSummary READ StsRegSummary WRITE setStsRegSummary NOTIFY stsRegSummaryChanged)
-//	Q_PROPERTY(int StsRegOperationalFailure READ StsRegOperationalFailure WRITE setStsRegOperationalFailure NOTIFY stsRegOperationalFailureChanged)
-//	Q_PROPERTY(int StsRegHardwareFailure READ StsRegHardwareFailure WRITE setStsRegHardwareFailure NOTIFY stsRegHardwareFailureChanged)
-//	Q_PROPERTY(int StsRegWarning READ StsRegWarning WRITE setStsRegWarning NOTIFY stsRegWarningChanged)
 	Q_PROPERTY(double SOCAmpHrs READ SOCAmpHrs WRITE setSOCAmpHrs NOTIFY socAmpHrsChanged)
 	Q_PROPERTY(double AirTemp READ AirTemp WRITE setAirTemp NOTIFY airTempChanged)
 	Q_PROPERTY(double HealthIndication READ HealthIndication WRITE setHealthIndication NOTIFY healthIndicationChanged)
@@ -41,7 +37,6 @@ class BatteryController : public QObject
 	Q_PROPERTY(int DeviceAddress READ DeviceAddress WRITE setDeviceAddress NOTIFY deviceAddressChanged)
 	Q_PROPERTY(int ClearStatusRegisterFlags READ ClearStatusRegisterFlags WRITE setClearStatusRegisterFlags NOTIFY clearStatusRegisterFlagsChanged)
 	Q_PROPERTY(int RequestDelayedSelfMaintenance READ RequestDelayedSelfMaintenance WRITE setRequestDelayedSelfMaintenance NOTIFY requestDelayedSelfMaintenanceChanged)
-//	Q_PROPERTY(int SetOperationalMode READ SetOperationalMode WRITE setSetOperationalMode NOTIFY setOperationalModeChanged)
 	Q_PROPERTY(int RequestImmediateSelfMaintenance READ RequestImmediateSelfMaintenance WRITE setRequestImmediateSelfMaintenance NOTIFY requestImmediateSelfMaintenanceChanged)
 
 	Q_PROPERTY(int hasAlarm READ hasAlarm WRITE setHasAlarm NOTIFY hasAlarmChanged)
@@ -81,7 +76,6 @@ signals:
 	void stateChanged();
 	void deviceAddressChanged();
 	void clearStatusRegisterFlagsChanged();
-//	void setOperationalModeChanged();
 	void requestDelayedSelfMaintenanceChanged();
 	void requestImmediateSelfMaintenanceChanged();
 
@@ -149,14 +143,6 @@ public:
 
 	double BattPower() const;
 
-	int StsRegSummary() const;
-	void setStsRegSummary(int t);
-	int StsRegHardwareFailure() const;
-	void setStsRegHardwareFailure(int t);
-	int StsRegOperationalFailure() const;
-	void setStsRegOperationalFailure(int t);
-	int StsRegWarning() const;
-	void setStsRegWarning(int t);
 	int operationalMode() const;
 	void setOperationalMode(int t);
 	double SOCAmpHrs() const;
@@ -171,8 +157,6 @@ public:
 	void setClearStatusRegisterFlags(int t);
 	int RequestDelayedSelfMaintenance() const;
 	void setRequestDelayedSelfMaintenance(int t);
-//	int SetOperationalMode() const;
-//	void setSetOperationalMode(int t);
 	int RequestImmediateSelfMaintenance() const;
 	void setRequestImmediateSelfMaintenance(int t);
 

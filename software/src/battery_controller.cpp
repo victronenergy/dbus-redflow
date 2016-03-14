@@ -177,58 +177,6 @@ double BatteryController::BattPower() const
 	return mBattAmps * mBattVolts;
 }
 
-int BatteryController::StsRegSummary() const
-{
-	return mStsRegSummary;
-}
-
-void BatteryController::setStsRegSummary(int t)
-{
-	if (mStsRegSummary == t)
-		return;
-	mStsRegSummary = t;
-	emit stsRegSummaryChanged();
-}
-
-int BatteryController::StsRegHardwareFailure() const
-{
-	return mStsRegHardwareFailure;
-}
-
-void BatteryController::setStsRegHardwareFailure(int t)
-{
-	if (mStsRegHardwareFailure == t)
-		return;
-	mStsRegHardwareFailure = t;
-	emit stsRegHardwareFailureChanged();
-}
-
-int BatteryController::StsRegOperationalFailure() const
-{
-	return mStsRegOperationalFailure;
-}
-
-void BatteryController::setStsRegOperationalFailure(int t)
-{
-	if (mStsRegOperationalFailure == t)
-		return;
-	mStsRegOperationalFailure = t;
-	emit stsRegOperationalFailureChanged();
-}
-
-int BatteryController::StsRegWarning() const
-{
-	return mStsRegWarning;
-}
-
-void BatteryController::setStsRegWarning(int t)
-{
-	if (mStsRegWarning == t)
-		return;
-	mStsRegWarning = t;
-	emit stsRegWarningChanged();
-}
-
 int BatteryController::operationalMode() const
 {
 	return mOperationalMode;
