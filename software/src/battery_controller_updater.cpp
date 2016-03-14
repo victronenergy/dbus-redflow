@@ -147,10 +147,11 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 	}
 	case DeviceState:
 	{
-		qint16 summary = registers[0];
-		qint16 hwFailure = registers[1];
-		qint16 opFailure = registers[2];
-		qint16 warning = registers[3];
+		quint16 summary = registers[0];
+		quint16 hwFailure = registers[1];
+		quint16 opFailure = registers[2];
+		quint16 warning = registers[3];
+		QLOG_DEBUG() << "Device state:" << mDeviceAddress << summary << hwFailure << opFailure << warning;
 		mBatteryController->setHasAlarm(((summary & 0xE000) == 0) ? 0 : 1);
 		mBatteryController->setMaintenanceAlarm(getWarningState(warning, 11));
 		mBatteryController->setMaintenanceActiveAlarm(getWarningState(warning, 10));
