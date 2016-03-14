@@ -32,20 +32,20 @@ private slots:
 	void onTimer();
 
 private:
-	int getNextCandidateAddress() const;
+	quint8 getNextCandidateAddress() const;
 
-	int getNextScanAddress(int address);
+	quint8 getNextScanAddress(quint8 address);
 
-	void addNewDevice(int address);
+	void addNewDevice(quint8 address);
 
-	void scanAddress(int address);
+	void scanAddress(quint8 address);
 
 	ModbusRtu *mModbus;
 	int mScanInterval;
-	int mProbedAddress;
-	int mNewDeviceAddress;
-	int mAutoScanAddress;
-	int mMaxAddress;
+	quint8 mProbedAddress;
+	quint8 mNewDeviceAddress;
+	quint8 mAutoScanAddress;
+	quint8 mMaxAddress;
 };
 
 #endif // DEVICE_SCANNER_H

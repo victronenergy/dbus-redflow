@@ -3,8 +3,8 @@
 #include "device_scanner.h"
 #include "modbus_rtu.h"
 
-static const int DefaultAddress1 = 1;
-static const int DefaultAddress2 = 99;
+static const quint8 DefaultAddress1 = 1;
+static const quint8 DefaultAddress2 = 99;
 
 DeviceScanner::DeviceScanner(ModbusRtu *modbus, QObject *parent):
 	QObject(parent),
@@ -107,36 +107,35 @@ void DeviceScanner::onTimer()
 	mModbus->readRegisters(ModbusRtu::ReadHoldingRegisters, mProbedAddress, 0x9010, 1);
 }
 
-int DeviceScanner::getNextCandidateAddress() const
+quint8 DeviceScanner::getNextCandidateAddress() const
 {
-	for (int a = mMaxAddress + 1;; ++a) {
+	for (quint8 a = mMaxAddress + 1;; ++a) {
 		if (a != DefaultAddress1 && a != DefaultAddress2) {
 			return a;
 		}
 	}
 }
 
-int DeviceScanner::getNextScanAddress(int address)
+quint8 DeviceScanner::getNextScanAddress(quint8 address)
 {
 	if (address == DefaultAddress1)
 		return DefaultAddress2;
 	if (address == DefaultAddress2)
 		return mAutoScanAddress;
-	for (int a = address + 1;; ++a) {
-		if (a > 254)
-			a = DefaultAddress1 + 1;
-		if (a == DefaultAddress2)
-			a = DefaultAddress2 + 1;
-		mAutoScanAddress = a;
-		if (a % 10 == 0)
-			a = DefaultAddress1;
-		return a;
-	}
+	quint8 a = address + 1;
+	if (a > 254)
+		a = DefaultAddress1 + 1;
+	if (a == DefaultAddress2)
+		a = DefaultAddress2 + 1;
+	mAutoScanAddress = a;
+	if (a % 10 == 0)
+		a = DefaultAddress1;
+	return a;
 }
 
-void DeviceScanner::addNewDevice(int address)
+void DeviceScanner::addNewDevice(quint8 address)
 {
-	QLOG_INFO() << "New device found by scanner:" << address;
+	QLOG_DEBUG() << "New device found by scanner:" << address;
 	if (address == DefaultAddress1 || address == DefaultAddress2) {
 		QLOG_ERROR() << "Default modbus address reported as new address" << address;
 		return;
@@ -145,7 +144,7 @@ void DeviceScanner::addNewDevice(int address)
 	emit deviceFound(address);
 }
 
-void DeviceScanner::scanAddress(int address)
+void DeviceScanner::scanAddress(quint8 address)
 {
 	QLOG_TRACE() << "Polling modbus address" << address;
 	mProbedAddress = address;
