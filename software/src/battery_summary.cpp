@@ -243,6 +243,6 @@ void BatterySummary::updateValues()
 	setRequestDelayedSelfMaintenance(0);
 	setRequestImmediateSelfMaintenance(0);
 
-	setMaintenanceActive(maintenanceNeeded && count > 0 ? 1 : 0);
-	setMaintenanceNeeded(maintenanceActive && count > 0 ? 1 : 0);
+	setMaintenanceActive(maintenanceActive && count > 0 ? 1 : 0);
+	setMaintenanceNeeded(maintenanceNeeded && count > 0 ? 1 : 0);
 }
