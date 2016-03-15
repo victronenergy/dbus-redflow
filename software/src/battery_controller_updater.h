@@ -90,6 +90,7 @@ private:
 
 	BatteryController *mBatteryController;
 	int mDeviceAddress;
+	int mRegisterCount;
 	bool mUpdatingController;
 	ModbusRtu *mModbus;
 	QTimer *mAcquisitionTimer;
