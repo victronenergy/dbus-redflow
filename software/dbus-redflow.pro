@@ -68,16 +68,11 @@ SOURCES += \
     src/modbus_rtu.cpp \
     src/v_bus_node.cpp \
     src/crc16.cpp \
-    src/settings.cpp \
-    src/settings_bridge.cpp \
-    src/battery_controller_settings.cpp \
-    src/battery_controller_settings_bridge.cpp \
     src/battery_controller_updater.cpp \
     src/battery_controller_bridge.cpp \
     src/battery_controller.cpp \
     src/dbus_redflow.cpp \
     src/battery_summary.cpp \
-    src/bms_service.cpp \
     src/abstract_monitor_service.cpp \
     src/device_scanner.cpp \
     src/battery_summary_bridge.cpp
@@ -93,20 +88,15 @@ HEADERS += \
     ext/velib/inc/velib/platform/serial.h \
     src/dbus_bridge.h \
     src/defines.h \
-    src/settings.h \
     src/modbus_rtu.h \
     src/v_bus_node.h \
     src/crc16.h \
-    src/settings_bridge.h \
     src/velib/velib_config_app.h \
-    src/battery_controller_settings.h \
     src/dbus_redflow.h \
-    src/battery_controller_settings_bridge.h \
     src/battery_controller_bridge.h \
     src/battery_controller.h \
     src/battery_controller_updater.h \
     src/battery_summary.h \
-    src/bms_service.h \
     src/abstract_monitor_service.h \
     src/device_scanner.h \
     src/battery_summary_bridge.h

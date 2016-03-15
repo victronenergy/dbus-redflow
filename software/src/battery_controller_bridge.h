@@ -7,8 +7,6 @@
 #include "dbus_redflow.h"
 
 class BatteryController;
-class BatteryControllerSettings;
-class Settings;
 
 /*!
  * @brief Connects data from `BatteryController` to the DBus.

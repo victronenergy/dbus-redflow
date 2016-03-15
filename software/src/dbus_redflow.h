@@ -7,10 +7,8 @@
 class BatteryController;
 class BatteryControllerUpdater;
 class BatterySummary;
-class BmsService;
 class DeviceScanner;
 class ModbusRtu;
-class Settings;
 
 /*!
  * Main object which ties everything together.
@@ -56,7 +54,6 @@ private:
 	QString mPortName;
 	QList<BatteryController *> mBatteryControllers;
 	BatterySummary *mSummary;
-	BmsService *mBmsService;
 };
 
 #endif // DBUS_REDFLOW_H

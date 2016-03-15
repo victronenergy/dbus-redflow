@@ -1,7 +1,6 @@
 #include <QsLog.h>
 #include <QTimer>
 #include "battery_controller.h"
-#include "battery_controller_settings.h"
 #include "battery_controller_updater.h"
 #include "modbus_rtu.h"
 

@@ -6,7 +6,6 @@
 
 class ModbusRtu;
 class QTimer;
-class Settings;
 
 /// Finds Redflow batteries via modbus RTU
 class DeviceScanner : public QObject

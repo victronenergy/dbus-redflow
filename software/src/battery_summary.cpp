@@ -220,7 +220,7 @@ void BatterySummary::updateValues()
 		// We set maintenanceNeeded and maintenanceActive to false if any
 		// battery has not been put in maintenance mode yet. We do this, so
 		// the GUI can use these values to force all remaining batteries into
-		// into maintance mode.
+		// into maintenance mode.
 		maintenanceNeeded = maintenanceNeeded && bc->maintenanceAlarm() != 0;
 		maintenanceActive = maintenanceActive && bc->maintenanceActiveAlarm() != 0;
 		if (mRequestClearStatusRegister == 1)

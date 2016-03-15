@@ -7,7 +7,6 @@
 #include "modbus_rtu.h"
 
 class BatteryController;
-class BatteryControllerSettings;
 
 /*!
  * Retrieves data from a Carlo Gavazzi energy meter.
