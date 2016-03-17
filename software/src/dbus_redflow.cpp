@@ -18,6 +18,7 @@ DBusRedflow::DBusRedflow(const QString &portName, QObject *parent):
 	qRegisterMetaType<ConnectionState>();
 	qRegisterMetaType<QList<quint16> >();
 
+	mModbus->setTimeout(250);
 	connect(mModbus, SIGNAL(serialEvent(const char *)),
 			this, SLOT(onSerialEvent(const char *)));
 
@@ -38,7 +39,8 @@ void DBusRedflow::onDeviceFound(int address)
 	mBatteryControllers.append(m);
 	connect(m, SIGNAL(connectionStateChanged()),
 			this, SLOT(onConnectionStateChanged()));
-	mDeviceScanner->setScanInterval(2000);
+	mModbus->setTimeout(1000);
+	mDeviceScanner->setScanInterval(4000);
 }
 
 void DBusRedflow::onConnectionStateChanged()

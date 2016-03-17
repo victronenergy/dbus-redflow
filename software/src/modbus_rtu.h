@@ -72,6 +72,8 @@ public:
 
 	~ModbusRtu();
 
+	void setTimeout(int timeout);
+
 	void readRegisters(FunctionCode function, quint8 slaveAddress,
 					   quint16 startReg, quint16 count);
 
@@ -137,12 +139,12 @@ private:
 		quint16 value;
 	};
 	QList<Cmd> mPendingCommands;
-	uint8_t mCurrentSlave;
+	quint8 mCurrentSlave;
 
 	// State engine
 	ReadState mState;
 	FunctionCode mFunction;
-	uint8_t mCount;
+	quint8 mCount;
 	quint16 mStartAddress;
 	quint16 mCrc;
 	Crc16 mCrcBuilder;
