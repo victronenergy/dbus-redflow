@@ -204,7 +204,7 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 			break;
 		}
 	} else {
-		QLOG_DEBUG() << __func__ << "Incorrect number of registers" << slaveAddress << mRegisterCount;
+		QLOG_DEBUG() << "Incorrect number of registers received" << slaveAddress << mRegisterCount;
 	}
 	mTimeoutCount = 0;
 	startNextAction();
