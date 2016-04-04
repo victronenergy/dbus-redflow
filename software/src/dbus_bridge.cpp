@@ -187,23 +187,14 @@ void DBusBridge::onPropertyChanged()
 {
 	QObject *src = sender();
 	int signalIndex = senderSignalIndex();
-	const QMetaObject *mo = src->metaObject();
-	for (int i=0; i<mo->propertyCount(); ++i) {
-		QMetaProperty mp = mo->property(i);
-		if (mp.hasNotifySignal() && mp.notifySignalIndex() == signalIndex) {
-			for (QList<BusItemBridge>::iterator it = mBusItems.begin();
-				 it != mBusItems.end();
-				 ++it) {
-				if (it->src == src &&
-					it->property.isValid() &&
-					strcmp(it->property.name(), mp.name()) == 0) {
-					if (mUpdateTimer == 0)
-						publishValue(*it);
-					else
-						it->changed	= true;
-					break;
-				}
-			}
+	for (QList<BusItemBridge>::iterator it = mBusItems.begin(); it != mBusItems.end(); ++it) {
+		if (it->src == src && it->property.isValid() &&
+				it->property.notifySignalIndex() == signalIndex) {
+			if (mUpdateTimer == 0)
+				publishValue(*it);
+			else
+				it->changed = true;
+			break;
 		}
 	}
 }
@@ -250,9 +241,7 @@ void DBusBridge::onVBusItemChanged()
 
 void DBusBridge::onUpdateTimer()
 {
-	for (QList<BusItemBridge>::iterator it = mBusItems.begin();
-		 it != mBusItems.end();
-		 ++it) {
+	for (QList<BusItemBridge>::iterator it = mBusItems.begin(); it != mBusItems.end(); ++it) {
 		if (it->changed) {
 			publishValue(*it);
 			it->changed = false;
@@ -319,7 +308,6 @@ void DBusBridge::publishValue(DBusBridge::BusItemBridge &item)
 	if (!value.isValid())
 		value = QVariant::fromValue(QList<int>());
 	mUpdateBusy = true;
-
 	item.item->setValue(value);
 	mUpdateBusy = false;
 }
