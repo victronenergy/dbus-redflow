@@ -196,7 +196,7 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 			mState = Wait;
 			break;
 		case Wait:
-			mState = DeviceState;
+			mState = Start;
 			break;
 		default:
 			QLOG_ERROR() << "Unknown updater state" << mState;
@@ -229,7 +229,7 @@ void BatteryControllerUpdater::onWriteCompleted(int function, quint8 slaveAddres
 		// This is a workaround: the ZBM takes some time to change the
 		// operational mode. By setting the mode to wait, we ensure that the
 		// operational mode will not be retrieved for 5 seconds, preventing the
-		// displayed to switch back temporarily to the previous value.
+		// display from switching back temporarily to the previous value.
 		mStopwatch.start();
 		mTmpState = Wait;
 		break;
@@ -240,7 +240,7 @@ void BatteryControllerUpdater::onWriteCompleted(int function, quint8 slaveAddres
 		mBatteryController->setRequestImmediateSelfMaintenance(0);
 		break;
 	default:
-		mTmpState = DeviceState;
+		mTmpState = Start;
 		break;
 	}
 	mState = mTmpState;
@@ -394,6 +394,6 @@ void BatteryControllerUpdater::readRegisters(quint16 startReg, quint16 count)
 
 void BatteryControllerUpdater::writeRegister(quint16 reg, quint16 value)
 {
-	QLOG_WARN() << "Write register" << reg << "value" << value;
+	QLOG_INFO() << "Write register" << reg << "value" << value;
 	mModbus->writeRegister(ModbusRtu::WriteSingleRegister, mDeviceAddress, reg, value);
 }
