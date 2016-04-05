@@ -379,6 +379,7 @@ void BatteryControllerUpdater::queueWriteAction(State writeState)
 	if (mState == Wait) {
 		mTmpState = Wait;
 		mState = writeState;
+		mAcquisitionTimer->stop();
 		startNextAction();
 	} else {
 		mTmpState = writeState;
