@@ -153,7 +153,10 @@ void BatteryControllerUpdater::onReadCompleted(int function, quint8 slaveAddress
 			quint16 opFailure = registers[2];
 			quint16 warning = registers[3];
 			QLOG_DEBUG() << "Device state:" << mDeviceAddress << summary << hwFailure << opFailure << warning;
-			mBatteryController->setHasAlarm(((summary & 0xE000) == 0) ? 0 : 1);
+			// maintenanceAlarm and maintenanceActiveAlarm are no longer counted as warning, so we
+			// have to set hasAlarm to 0 when no other (real) warnings are active.
+			mBatteryController->setHasAlarm(((summary & 0xE000) == 0) ?
+				0 : (hwFailure != 0 || opFailure !=0 || (warning & 0xF3FF) != 0));
 			mBatteryController->setMaintenanceAlarm(getWarningState(warning, 11));
 			mBatteryController->setMaintenanceActiveAlarm(getWarningState(warning, 10));
 			mBatteryController->setOverCurrentAlarm(getAlarmState(opFailure, warning, 15));
