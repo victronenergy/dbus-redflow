@@ -1,5 +1,5 @@
 # Application version and revision
-VERSION = 0.4.2
+VERSION = 0.4.3
 REVISION = $$system(git --git-dir $$PWD/../.git --work-tree $$PWD describe --always --dirty --tags)
 
 # Create a include file with VERION / REVISION
