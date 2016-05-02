@@ -6,7 +6,6 @@
 #include "battery_controller.h"
 #include "battery_controller_bridge.h"
 #include "battery_controller_updater.h"
-#include "version.h"
 
 BatteryControllerBridge::BatteryControllerBridge(BatteryController *BatteryController,
 							   QObject *parent) :

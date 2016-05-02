@@ -6,7 +6,6 @@
 #include <velib/qt/v_busitems.h>
 #include "abstract_monitor_service.h"
 #include "battery_controller.h"
-#include "version.h"
 #include "v_bus_node.h"
 
 AbstractMonitorService::AbstractMonitorService(const QString &serviceName,
